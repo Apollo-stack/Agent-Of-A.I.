@@ -3,11 +3,10 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-# Carrega a chave do arquivo .env
 load_dotenv()
 
 class AgentIA:
-    def __init__(self, modelo="gemini-2.5-flash"):
+    def __init__(self, modelo="gemini-pro"):
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("ERRO: A chave GOOGLE_API_KEY não foi encontrada no arquivo .env")
@@ -23,13 +22,28 @@ class AgentIA:
         self.system_message = SystemMessage(content=texto_persona)
 
     def pensar(self, pergunta_usuario, contexto_extra=None):
+        # Começa com a persona (Mensagem de Sistema - Posição 0)
         messages = [self.system_message]
 
+        # A CORREÇÃO ESTÁ AQUI:
+        # Em vez de criar uma nova SystemMessage (que o Gemini reclama na posição 1),
+        # nós juntamos o contexto dentro da mensagem do usuário.
+        
+        texto_final = pergunta_usuario
+        
         if contexto_extra:
-            msg_contexto = f"Use as informações abaixo como contexto:\n\n{contexto_extra}"
-            messages.append(SystemMessage(content=msg_contexto))
+            texto_final = f"""
+            USE AS INFORMAÇÕES ABAIXO COMO CONTEXTO PARA RESPONDER:
+            -----------------------------------------
+            {contexto_extra}
+            -----------------------------------------
+            
+            PERGUNTA DO USUÁRIO:
+            {pergunta_usuario}
+            """
 
-        messages.append(HumanMessage(content=pergunta_usuario))
+        # Adiciona tudo como uma única mensagem humana (Posição 1 Aceita!)
+        messages.append(HumanMessage(content=texto_final))
 
         try:
             resposta = self.llm.invoke(messages)
