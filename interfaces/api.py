@@ -19,7 +19,7 @@ from core.agent import AgentIA
 
 print("Carregando IA...")
 try:
-    minha_ia = AgentIA(modelo="gemini-pro")
+    minha_ia = AgentIA(modelo="gemini-2.5-flash")
     # Persona padrão (para o Pipedrive)
     minha_ia.definir_persona("Você é um gerente de vendas sênior. Dê dicas táticas e curtas.")
     print("✅ IA Pronta!")
