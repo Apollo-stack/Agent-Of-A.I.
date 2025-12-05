@@ -1,0 +1,1 @@
+🧪 Experimental Project This repository is a study ground where I explore AI integration concepts. Large portions of the code were generated with AI assistance to understand patterns for future implementation in CRMs.
